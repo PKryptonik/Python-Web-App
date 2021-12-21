@@ -7,8 +7,12 @@ def create_app():
 
      from .views import views
      from .auth import auth
+     from .template_helpers import configure_helpers
 
      app.register_blueprint(views, url_prefix='/')
      app.register_blueprint(auth, url_prefix='/')
+     configure_helpers(app)
 
      return app
+
+

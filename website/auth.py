@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash
+import time
 
 auth = Blueprint('auth', __name__)
-
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -28,5 +28,7 @@ def signup():
             flash('Passwords must match in order to proceed.', category='error')
         else:
             flash('You are all signed up!', category='success')
+            #time.sleep(3)
+            #@auth.route('/login') 
          
     return render_template("signup.html")
