@@ -33,12 +33,11 @@
           </div>
       </nav>
 
-      {{ config }}
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
       {% for category, messages in messages %}
       <div class="alert {{ get_category_class(category) }} alert-dismissible fade show" role="alert">
-        {{ message }} 
+        {{ message }}
         <button type="button" class="close" data-dismiss="alert">
           <span aria-hidden="true">&times;</span>
         </button>
