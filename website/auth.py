@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash
-from . import db
+from .models import db
 from flask.helpers import url_for
 from werkzeug.utils import redirect
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -26,14 +26,12 @@ def login():
             if user:
                 if check_password_hash(user.password, password):
                     flash('successfully logged in', category='success')
-                return redirect(url_for('views.home')) 
+                return redirect(url_for('views.home'))
         else:
             for message in validation_errors.values():
                 flash(message, category='error')
             return redirect(request.path)
 
-
-        
     return render_template("login.html")
 
 @auth.route('/logout')

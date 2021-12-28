@@ -1,16 +1,16 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from os import path
+from pathlib import Path
 
-db = SQLAlchemy()
-DB_NAME = "database.db"
+from flask import Flask
+
+from . import models
 
 
 def create_app():
      app = Flask(__name__)
+     Path(app.instance_path).mkdir(exist_ok=True)  # ensure instance directory exists
      app.config['SECRET_KEY'] = 'Fromwhereyourekneelingitmustseemlikean18caratrunofbadluckTruthisthegamewasriggedfromthestart'
-     app.config['SQLAlchemy_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
-     db.init_app(app)
+
+     models.initialize_database(app)
 
      from .views import views
      from .auth import auth
@@ -20,15 +20,4 @@ def create_app():
      app.register_blueprint(auth, url_prefix='/')
      configure_helpers(app)
 
-     from .models import User, Note
-
-     create_database(app)
-
      return app
-
-def create_database(app):
-     if not path.exists('website/' + DB_NAME):
-          db.create_all(app=app)
-          print('Created Database!')
-
-
