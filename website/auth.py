@@ -8,13 +8,11 @@ import time
 
 auth = Blueprint('auth', __name__)
 
-validation_errors = {}
-
-
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     
     if request.method =='POST':
+        validation_errors = {}
         username = request.form.get('username')
         password = request.form.get('password')
 
@@ -25,16 +23,15 @@ def login():
         if not password:
             validation_errors['password_error'] = 'A password is required'
         if not len(validation_errors):
-            for message in validation_errors.values():
-                flash(message, category='error')
-            return redirect(request.path)
-        else:    
             if user:
                 if check_password_hash(user.password, password):
                     flash('successfully logged in', category='success')
                 return redirect(request.path)
+        else:
+            for message in validation_errors.values():
+                flash(message, category='error')
+            return redirect(request.path)
 
-        
     return render_template("login.html")
 
 @auth.route('/logout')
@@ -47,6 +44,7 @@ def signup():
 
     
     if request.method == 'POST':
+        validation_errors = {}
         username = request.form.get('username')
         password1 = request.form.get('password-1')
         password2 = request.form.get('password-2')
