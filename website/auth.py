@@ -32,7 +32,7 @@ def login():
             if user:
                 if check_password_hash(user.password, password):
                     flash('successfully logged in', category='success')
-                return redirect(url_for('/')) 
+                return redirect(request.path)
 
         
     return render_template("login.html")
