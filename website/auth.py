@@ -26,7 +26,7 @@ def login():
             if user:
                 if check_password_hash(user.password, password):
                     flash('successfully logged in', category='success')
-                return redirect(request.path)
+                return redirect(url_for('views.home'))
         else:
             for message in validation_errors.values():
                 flash(message, category='error')
