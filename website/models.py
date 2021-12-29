@@ -1,8 +1,7 @@
 from pathlib import Path
-
 from enum import unique
 from flask import Flask
-from flask_login import UserMixin
+from flask_login import UserMixin, LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 
@@ -34,3 +33,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(25), unique=True)
     password = db.Column(db.String(50))
     notes = db.relationship('Note')
+
+def flask_user_control(app: Flask): #unsure of the "(app: Flask)" portions use, does this let this function be used during the initialization of the app?
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+     
+    @login_manager.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
