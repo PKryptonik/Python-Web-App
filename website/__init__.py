@@ -21,12 +21,5 @@ def create_app():
      configure_helpers(app)
 
      models.flask_user_control(app)
-#     login_manager = LoginManager()
-#     login_manager.login_view = 'auth.login'
-#     login_manager.init_app(app)
-     
-#     @login_manager.user_loader
-#     def load_user(id):
-#          return user.query.get(int(id))
 
      return app

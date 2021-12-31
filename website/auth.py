@@ -3,8 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from flask.helpers import url_for
 from werkzeug.utils import redirect
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import db
-from .models import User
+from .models import db, User
 import time
 
 auth = Blueprint('auth', __name__)
@@ -34,7 +33,7 @@ def login():
                 flash(message, category='error')
             return redirect(request.path)
 
-    return render_template("login.html")
+    return render_template("login.html", user=current_user)
 
 @auth.route('/logout')
 @login_required #makes it so you cant access logout unless logged in. flask magic
@@ -73,7 +72,7 @@ def signup():
             new_user = User(username=username, password=generate_password_hash(password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
-            flash('There were no errors', category='success')
+            flash('Signup successful, please log in.', category='success')
             return redirect(url_for('auth.login'))
         else:
             for message in validation_errors.values():
@@ -81,4 +80,4 @@ def signup():
                 time.sleep(3)
             return redirect(request.path) #redirect back to the same page
 
-    return render_template("signup.html")
+    return render_template("signup.html", user=current_user)
