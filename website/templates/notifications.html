@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+Notifications
+{% endblock %}
+{% block content %}
+    <h3 align="center">Notifications</h3>
+    {% with messages = get_flashed_messages(category_filter=['notification']) %}
+    {% if messages %}
+          {% for category, message in messages %}
+          <div class="alert alert-info">{{message}}</div>
+          {% endfor %}
+    {% else %}
+        You have no notifications
+    {% endif %}
+    {% endwith %}
+{% endblock %}

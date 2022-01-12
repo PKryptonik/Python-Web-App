@@ -1,6 +1,9 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import login_required, current_user
-from .models import Note, db
+from flask.helpers import url_for
+from werkzeug.utils import redirect
+from .models import Note, User, db
+from .flashed_messages import flash
 import json
 
 views = Blueprint('views', __name__)
@@ -15,7 +18,8 @@ def home():
         if len(note) < 1:
             validation_errors['note_error'] = 'Note cannot be blank'
         if not len(validation_errors):
-            new_note = Note(data=note, user_id=current_user.id)
+            new_note = Note(data=note)
+            current_user.notes.append(new_note)
             db.session.add(new_note)
             db.session.commit()
             flash('note added', category='success')
@@ -23,9 +27,17 @@ def home():
             for message in validation_errors:
                 flash(message, category='error' )
 
-    return render_template("home.html", user=current_user)
+    return render_template("home.html")
+
+
+@views.route('/notifications', methods=['GET'])
+@login_required
+def notifications():
+    return render_template('notifications.html')
+
 
 @views.route('/delete-note', methods=['POST']) #why is all of this needed?
+@login_required
 def delete_note():
     note = json.loads(request.data)
     noteId = note['noteId']
@@ -35,4 +47,34 @@ def delete_note():
             db.session.delete(note)
             db.session.commit()
             
+<<<<<<< Updated upstream
     return jsonify({})
+=======
+    return jsonify({})
+
+@views.route('/share-note', methods=['POST'])
+def share_note():
+    body = request.json
+
+    #flash('A user has shared a note with you! Click here to view', category='notification')
+
+    current_user
+    target_user = db.session.query(User).filter_by(username=body['username']).scalar()
+    if not target_user:
+        return jsonify(result=False, message=f"User {body['username']} does not exist")
+
+    note = db.session.query(Note).get(body['noteId'])
+    if not note:
+        return jsonify(result=False, message='Invalid note id')
+
+    note_copy = Note()
+    attrs = ['data']
+    for attr in attrs:
+        setattr(note_copy, attr, getattr(note, attr))
+
+    target_user.notes.append(note_copy)
+    db.session.add(note_copy)
+    db.session.commit()
+
+    return jsonify(result=True)
+>>>>>>> Stashed changes

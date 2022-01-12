@@ -1,8 +1,43 @@
+function postJson(url, json, options) {
+    options = options || {}
+    let params = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+    }
+    Object.assign(params, options);
+    return fetch(url, params);
+}
+
 function deleteNote(noteId) {
     if (window.confirm("Proceeding will perminantly delete all content within the note and cannot be recovered. Proceed?")) {
-        fetch("delete-note", {
-            method: "POST",
-            body: JSON.stringify({ noteId: noteId }),
-        }).then((_res) => {
+        postJson("delete-note", { noteId: noteId }).then((_res) => {
             window.location.href = "/";
+<<<<<<< Updated upstream
 })}}
+=======
+        })
+    }
+}
+
+function shareNote(noteId, userId) {
+    let user = window.prompt("Enter the username of the person you would like to share this note with", "");
+    let text;
+    if (user == null || user == "") {
+        text = "note sharing canceled";
+    }
+    else {
+        postJson("share-note", { noteId: noteId, username: user }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if(data.result) {
+                window.location.href = window.location.href;
+            } else {
+                alert(`Error sharing: ${data.message || 'Unknown error, please contact support'}`)
+            }
+        })
+    }
+}
+>>>>>>> Stashed changes
