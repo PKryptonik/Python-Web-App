@@ -10,7 +10,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 
 
-<<<<<<< Updated upstream
 def initialize_database(app: Flask):
     """Initialize the application database. It is contained in the Flask instance directory"""
     DB_NAME = 'web_app.sqlite'
@@ -21,32 +20,24 @@ def initialize_database(app: Flask):
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path_full}'
     db.init_app(app)
     db.create_all(app=app)
-=======
 class Note_user_link(db.Model): #association
     __tablename__ = 'note_user_link'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
     note_id = db.Column(db.Integer, db.ForeignKey('note.id'), index=True)
->>>>>>> Stashed changes
 
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(8000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-<<<<<<< Updated upstream
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) #"one to many" parent to many children
-=======
->>>>>>> Stashed changes
 
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True)
     password = db.Column(db.String(50))
-<<<<<<< Updated upstream
-    notes = db.relationship('Note')
-=======
     notes = db.relationship('Note', secondary=Note_user_link.__table__)
 
     def set_password(self, password):
@@ -56,7 +47,6 @@ class User(db.Model, UserMixin):
         """Check provided password against this user's stored one."""
         return check_password_hash(self.password, password)
 
->>>>>>> Stashed changes
 
 def flask_user_control(app: Flask): #unsure of the "(app: Flask)" portions use, does this let this function be used during the initialization of the app?
     login_manager = LoginManager()
@@ -66,8 +56,6 @@ def flask_user_control(app: Flask): #unsure of the "(app: Flask)" portions use, 
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
-<<<<<<< Updated upstream
-=======
 
 
 def initialize_database(app: Flask):
@@ -91,4 +79,3 @@ def initialize_database(app: Flask):
 
             db.session.add(user)
             db.session.commit()
->>>>>>> Stashed changes

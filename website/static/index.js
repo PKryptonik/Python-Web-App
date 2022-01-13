@@ -15,9 +15,6 @@ function deleteNote(noteId) {
     if (window.confirm("Proceeding will perminantly delete all content within the note and cannot be recovered. Proceed?")) {
         postJson("delete-note", { noteId: noteId }).then((_res) => {
             window.location.href = "/";
-<<<<<<< Updated upstream
-})}}
-=======
         })
     }
 }
@@ -40,4 +37,3 @@ function shareNote(noteId, userId) {
         })
     }
 }
->>>>>>> Stashed changes
