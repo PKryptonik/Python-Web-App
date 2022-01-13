@@ -37,3 +37,16 @@ function shareNote(noteId, userId) {
         })
     }
 }
+
+function editNote(noteId) {
+    let content = window.prompt("editing current note", "");
+    postJson("edit-note", { noteId: noteId, content: content }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if(data.result) {
+            window.location.href = window.location.href;
+        } else {
+            alert(`Error editing: ${data.message || 'Unknown error, please contact support'}`)
+        }
+    })
+}

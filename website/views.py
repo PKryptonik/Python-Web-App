@@ -74,3 +74,17 @@ def share_note():
     db.session.commit()
 
     return jsonify(result=True)
+
+@views.route('/edit-note', methods=['POST'])
+@login_required
+def edit_note():
+    note = json.loads(request.data)
+    noteId = note['noteId']
+    content = note['content']
+    note = Note.query.get(noteId)
+    if note:
+        if note.user_id == current_user.id:
+            db.session.merge
+            db.session.commit()
+            
+    return jsonify(result=True)
