@@ -38,10 +38,17 @@
               <a class="nav-item nav-link" id="signup" href="/signup">Signup</a>
               {% endif %}
             </div>
+            <div class="text-white">
+              {% if user.is_authenticated %}
+              {% with messages = peek_flashed_messages(category_filter=['notification']) %}
+                <a href="{{url_for('views.notifications')}}">{% if messages | length %}You have {{messages|length}} notifications{% else %}No notifications{% endif %}</a>
+              {% endwith %}
+              {% endif %}
+            </div>
           </div>
       </nav>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
+{% with messages = get_flashed_messages(category_filter=['success', 'error']) %}
 {% if messages %}
       {% for category, message in messages %}
       <div class="alert {{ get_category_class(category) }} alert-dismissible fade show" role="alert">
