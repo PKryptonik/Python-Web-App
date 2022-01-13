@@ -13,6 +13,9 @@
         <button type="button" class="close" onclick="shareNote({{ note.id }})">
             <span aria-hidden="true">&#187;</span>
         </button>
+        <button type="button" class="close" onclick="editNote({{ note.id }})">
+            <img src="/static/images/edit-icon.png" alt="oopsie woopsie!" height="20" width="20"/>
+        </button>
     </li>
     {% endfor %}
 </ul>
