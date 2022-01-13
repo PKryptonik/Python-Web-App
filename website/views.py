@@ -47,9 +47,6 @@ def delete_note():
             db.session.delete(note)
             db.session.commit()
             
-<<<<<<< Updated upstream
-    return jsonify({})
-=======
     return jsonify({})
 
 @views.route('/share-note', methods=['POST'])
@@ -77,4 +74,3 @@ def share_note():
     db.session.commit()
 
     return jsonify(result=True)
->>>>>>> Stashed changes
