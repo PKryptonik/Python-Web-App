@@ -24,7 +24,7 @@ def login():
         if not password:
             validation_errors['password_error'] = 'A password is required'
         if not len(validation_errors):
-            if user.check_password(password):
+            if user.check_password(password): #redo error checks
                 flash('successfully logged in', category='success')
                 login_user(user, remember=True)
             return redirect(url_for('views.home'))
@@ -47,7 +47,6 @@ def logout():
 def signup():
 
 
-    
     if request.method == 'POST':
         validation_errors = {}
         username = request.form.get('username')

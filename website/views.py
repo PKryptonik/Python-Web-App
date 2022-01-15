@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import login_required, current_user
 from flask.helpers import url_for
 from werkzeug.utils import redirect
-from .models import Note, User, db
+from .models import Note, Note_user_link, User, db
 from .flashed_messages import flash
 import json
 
@@ -39,21 +39,27 @@ def notifications():
 @views.route('/delete-note', methods=['POST']) #why is all of this needed?
 @login_required
 def delete_note():
+    #print("yay")
     note = json.loads(request.data)
     noteId = note['noteId']
     note = Note.query.get(noteId)
     if note:
-        if note.user_id == current_user.id:
-            db.session.delete(note)
-            db.session.commit()
-            
-    return jsonify({})
+        if note in current_user.notes:
+            current_user.notes.remove(note)
+            db.session.flush()
+            if not len(note.users):
+                db.session.delete(note)
+        db.session.commit()
+        return jsonify(result=True)
+    else:
+        return jsonify(result=False)
+
 
 @views.route('/share-note', methods=['POST'])
 def share_note():
     body = request.json
 
-    #flash('A user has shared a note with you! Click here to view', category='notification')
+    flash('A user has shared a note with you! Click here to view', category='notification')
 
     current_user
     target_user = db.session.query(User).filter_by(username=body['username']).scalar()
@@ -80,11 +86,8 @@ def share_note():
 def edit_note():
     note = json.loads(request.data)
     noteId = note['noteId']
-    content = note['content']
     note = Note.query.get(noteId)
     if note:
-        if note.user_id == current_user.id:
-            db.session.merge
+        if note in current_user.notes:
             db.session.commit()
-            
-    return jsonify(result=True)
+        return jsonify(result=True)
