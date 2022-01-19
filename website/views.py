@@ -90,3 +90,30 @@ def edit_note():
             note.data = newNoteData
             db.session.commit()
         return jsonify(result=True)
+
+
+@views.route('/collab-note', methods=['POST'])
+def collab_note():
+    body = request.json
+
+    flash('A user has collaborated a note with you! Click here to view', category='notification')
+
+    current_user
+    target_user = db.session.query(User).filter_by(username=body['username']).scalar()
+    if not target_user:
+        return jsonify(result=False, message=f"User {body['username']} does not exist")
+
+    note = db.session.query(Note).get(body['noteId'])
+    if not note:
+        return jsonify(result=False, message='Invalid note id')
+
+    note_copy = Note()
+    attrs = ['id', 'data']
+    for attr in attrs:
+        setattr(note_copy, attr, getattr(note, attr))
+
+    target_user.notes.append(note_copy)
+    db.session.add(note_copy)
+    db.session.commit()
+
+    return jsonify(result=True)

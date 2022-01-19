@@ -50,9 +50,9 @@ function editNote(noteId) {
     })
 }
 
-/*function collabNote(noteId) {
-    let user = window.prompt("Enter the username of the person you would like to share this note with", "");
-    postJson("edit-note", { noteId: noteId, username: user }).then((response) => {
+function collabNote(noteId) {
+    let user = window.prompt("Enter the username of the person you would like to collaborate on this note with", "");
+    postJson("collab-note", { noteId: noteId, username: user }).then((response) => {
         return response.json();
     }).then((data) => {
         if(data.result) {
@@ -61,4 +61,4 @@ function editNote(noteId) {
             alert(`Error editing: ${data.message || 'Unknown error, please contact support'}`)
         }
     })
-}*/
+}
