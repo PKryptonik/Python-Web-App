@@ -22,11 +22,13 @@ def initialize_database(app: Flask):
     db.create_all(app=app)
 
 
+
 class Note_user_link(db.Model): #association
     __tablename__ = 'note_user_link'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
     note_id = db.Column(db.Integer, db.ForeignKey('note.id'), nullable=False, index=True)
+
 
 
 class Note(db.Model):
@@ -36,12 +38,14 @@ class Note(db.Model):
     users = db.relationship('User', secondary=Note_user_link.__table__, back_populates='notes')
 
 
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True)
     password = db.Column(db.String(50))
     notes = db.relationship('Note', secondary=Note_user_link.__table__, back_populates='users')
 
+    
     def set_password(self, password):
         self.password = generate_password_hash(password)
 

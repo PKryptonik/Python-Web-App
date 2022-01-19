@@ -15,8 +15,9 @@ function deleteNote(noteId) {
     if (window.confirm("Proceeding will perminantly delete all content within the note and cannot be recovered. Proceed?")) {
         postJson("delete-note", { noteId: noteId }).then((_res) => {
             window.location.href = "/";
-    })
-}}
+        })
+    }
+}
 
 function shareNote(noteId) {
     let user = window.prompt("Enter the username of the person you would like to share this note with", "");
