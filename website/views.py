@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import login_required, current_user
-from flask.helpers import url_for
-from werkzeug.utils import redirect
-from .models import Note, Note_user_link, User, db
+from .models import Note, User, db
 from .flashed_messages import flash
 import json
 
@@ -36,10 +34,9 @@ def notifications():
     return render_template('notifications.html')
 
 
-@views.route('/delete-note', methods=['POST']) #why is all of this needed?
+@views.route('/delete-note', methods=['POST']) 
 @login_required
 def delete_note():
-    #print("yay")
     note = json.loads(request.data)
     noteId = note['noteId']
     note = Note.query.get(noteId)
@@ -84,10 +81,12 @@ def share_note():
 @views.route('/edit-note', methods=['POST'])
 @login_required
 def edit_note():
-    note = json.loads(request.data)
-    noteId = note['noteId']
+    editedNote = json.loads(request.data)
+    noteId = editedNote['noteId']
+    newNoteData = editedNote['data']
     note = Note.query.get(noteId)
     if note:
         if note in current_user.notes:
+            note.data = newNoteData
             db.session.commit()
         return jsonify(result=True)

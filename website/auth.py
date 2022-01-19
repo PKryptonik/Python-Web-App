@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user
 from flask.helpers import url_for
-from sqlalchemy.sql.operators import is_
 from werkzeug.utils import redirect
 from .models import db, User
 from .flashed_messages import flash
@@ -23,6 +22,8 @@ def login():
             validation_errors['username_error'] = 'A username is required'
         if not password:
             validation_errors['password_error'] = 'A password is required'
+        if not user:
+            validation_errors['username_error'] = 'Incorrect username or password'
         if not len(validation_errors):
             if user.check_password(password): #redo error checks
                 flash('successfully logged in', category='success')
@@ -77,7 +78,7 @@ def signup():
         else:
             for message in validation_errors.values():
                 flash(message, category='error')
-                time.sleep(3)
+            time.sleep(3)
             return redirect(request.path) #redirect back to the same page
 
     return render_template("signup.html")

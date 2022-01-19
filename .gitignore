@@ -2,5 +2,6 @@
 __pycache__
 .vscode/launch.json
 website.egg-info
+.sqlite
 
 instance/*
