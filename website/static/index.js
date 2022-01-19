@@ -19,7 +19,7 @@ function deleteNote(noteId) {
     }
 }
 
-function shareNote(noteId, userId) {
+function shareNote(noteId) {
     let user = window.prompt("Enter the username of the person you would like to share this note with", "");
     let text;
     if (user == null || user == "") {
@@ -37,3 +37,29 @@ function shareNote(noteId, userId) {
         })
     }
 }
+
+function editNote(noteId) {
+    let edit = window.prompt("editing current note", "");
+    postJson("edit-note", { noteId: noteId, data: edit }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if(data.result) {
+            window.location.href = window.location.href;
+        } else {
+            alert(`Error editing: ${data.message || 'Unknown error, please contact support'}`)
+        }
+    })
+}
+
+/*function collabNote(noteId) {
+    let user = window.prompt("Enter the username of the person you would like to share this note with", "");
+    postJson("edit-note", { noteId: noteId, username: user }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        if(data.result) {
+            window.location.href = window.location.href;
+        } else {
+            alert(`Error editing: ${data.message || 'Unknown error, please contact support'}`)
+        }
+    })
+}*/
