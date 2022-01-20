@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import login_required, current_user
-from .models import Note, User, db
+from .models import Note, Note_user_link, User, db
 from .flashed_messages import flash
 import json
 
@@ -95,7 +95,6 @@ def edit_note():
 @views.route('/collab-note', methods=['POST'])
 def collab_note():
     body = request.json
-
     flash('A user has collaborated a note with you! Click here to view', category='notification')
 
     current_user
@@ -106,14 +105,12 @@ def collab_note():
     note = db.session.query(Note).get(body['noteId'])
     if not note:
         return jsonify(result=False, message='Invalid note id')
+    
+    note = note.id
+    target_user = target_user.id
 
-    note_copy = Note()
-    attrs = ['id', 'data']
-    for attr in attrs:
-        setattr(note_copy, attr, getattr(note, attr))
-
-    target_user.notes.append(note_copy)
-    db.session.add(note_copy)
+    note_collab = Note_user_link(user_id=target_user, note_id=note)
+    db.session.add(note_collab)
     db.session.commit()
 
     return jsonify(result=True)
