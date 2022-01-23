@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 db = SQLAlchemy()
 
 
@@ -22,30 +21,36 @@ def initialize_database(app: Flask):
     db.create_all(app=app)
 
 
-
-class Note_user_link(db.Model): #association
+class Note_user_link(db.Model):  #association
     __tablename__ = 'note_user_link'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
-    note_id = db.Column(db.Integer, db.ForeignKey('note.id'), nullable=False, index=True)
-
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('user.id'),
+                        nullable=False,
+                        index=True)
+    note_id = db.Column(db.Integer,
+                        db.ForeignKey('note.id'),
+                        nullable=False,
+                        index=True)
 
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.String(8000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-    users = db.relationship('User', secondary=Note_user_link.__table__, back_populates='notes')
-
+    users = db.relationship('User',
+                            secondary=Note_user_link.__table__,
+                            back_populates='notes')
 
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True)
     password = db.Column(db.String(50))
-    notes = db.relationship('Note', secondary=Note_user_link.__table__, back_populates='users')
+    notes = db.relationship('Note',
+                            secondary=Note_user_link.__table__,
+                            back_populates='users')
 
-    
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
@@ -54,11 +59,13 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password, password)
 
 
-def flask_user_control(app: Flask): #unsure of the "(app: Flask)" portions use, does this let this function be used during the initialization of the app?
+def flask_user_control(
+    app: Flask
+):  # unsure of the "(app: Flask)" portions use, does this let this function be used during the initialization of the app?
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
-     
+
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))

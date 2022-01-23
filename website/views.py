@@ -6,8 +6,9 @@ import json
 
 views = Blueprint('views', __name__)
 
+
 @views.route('/', methods=['GET', 'POST'])
-@login_required #makes it so you cant access logout unless logged in. flask magic
+@login_required  # makes it so you cant access logout unless logged in. flask magic
 def home():
     if request.method == 'POST':
         validation_errors = {}
@@ -23,7 +24,7 @@ def home():
             flash('note added', category='success')
         else:
             for message in validation_errors:
-                flash(message, category='error' )
+                flash(message, category='error')
 
     return render_template("home.html")
 
@@ -34,7 +35,7 @@ def notifications():
     return render_template('notifications.html')
 
 
-@views.route('/delete-note', methods=['POST']) 
+@views.route('/delete-note', methods=['POST'])
 @login_required
 def delete_note():
     note = json.loads(request.data)
@@ -56,12 +57,15 @@ def delete_note():
 def share_note():
     body = request.json
 
-    flash('A user has shared a note with you! Click here to view', category='notification')
+    flash('A user has shared a note with you! Click here to view',
+          category='notification')
 
     current_user
-    target_user = db.session.query(User).filter_by(username=body['username']).scalar()
+    target_user = db.session.query(User).filter_by(
+        username=body['username']).scalar()
     if not target_user:
-        return jsonify(result=False, message=f"User {body['username']} does not exist")
+        return jsonify(result=False,
+                       message=f"User {body['username']} does not exist")
 
     note = db.session.query(Note).get(body['noteId'])
     if not note:
@@ -77,6 +81,7 @@ def share_note():
     db.session.commit()
 
     return jsonify(result=True)
+
 
 @views.route('/edit-note', methods=['POST'])
 @login_required
@@ -95,17 +100,20 @@ def edit_note():
 @views.route('/collab-note', methods=['POST'])
 def collab_note():
     body = request.json
-    flash('A user has collaborated a note with you! Click here to view', category='notification')
+    flash('A user has collaborated a note with you! Click here to view',
+          category='notification')
 
     current_user
-    target_user = db.session.query(User).filter_by(username=body['username']).scalar()
+    target_user = db.session.query(User).filter_by(
+        username=body['username']).scalar()
     if not target_user:
-        return jsonify(result=False, message=f"User {body['username']} does not exist")
+        return jsonify(result=False,
+                       message=f"User {body['username']} does not exist")
 
     note = db.session.query(Note).get(body['noteId'])
     if not note:
         return jsonify(result=False, message='Invalid note id')
-    
+
     note = note.id
     target_user = target_user.id
 
