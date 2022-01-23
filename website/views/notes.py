@@ -59,7 +59,6 @@ def share_note():
     flash('A user has shared a note with you! Click here to view',
           category='notification')
 
-    current_user
     target_user = db.session.query(User).filter_by(
         username=body['username']).scalar()
     if not target_user:
@@ -102,7 +101,6 @@ def collab_note():
     flash('A user has collaborated a note with you! Click here to view',
           category='notification')
 
-    current_user
     target_user = db.session.query(User).filter_by(
         username=body['username']).scalar()
     if not target_user:
@@ -113,11 +111,7 @@ def collab_note():
     if not note:
         return jsonify(result=False, message='Invalid note id')
 
-    note = note.id
-    target_user = target_user.id
-
-    note_collab = Note_user_link(user_id=target_user, note_id=note)
-    db.session.add(note_collab)
+    note.users.append(target_user)
     db.session.commit()
 
     return jsonify(result=True)
