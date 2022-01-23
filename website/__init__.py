@@ -1,7 +1,5 @@
 from pathlib import Path
 from flask import Flask
-from flask_login import LoginManager
-from flask_login.utils import login_user
 from . import models
 
 
@@ -16,7 +14,7 @@ def create_app():
 
     from .views import views
     from .auth import auth
-    from .template_helpers import configure_helpers
+    from website.lib.template_helpers import configure_helpers
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
