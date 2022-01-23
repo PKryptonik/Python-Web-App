@@ -3,7 +3,7 @@
 Signup
 {% endblock %}
 {% block content %}
-<form method="POST">
+<form action="{{ request.path }}" method="POST">
     <h3 align="center">Sign Up</h3>
     <div class="form-group">
         <label for="username">Username</label>

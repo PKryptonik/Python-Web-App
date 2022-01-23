@@ -1,10 +1,15 @@
+import time
+
 from flask import Blueprint, render_template, request
 from flask_login import login_user, login_required, logout_user
 from flask.helpers import url_for
 from werkzeug.utils import redirect
-from .models import db, User
-from .flashed_messages import flash
-import time
+
+from ..models.db import db
+from ..models.user import User
+from ..lib.flashed_messages import flash
+
+
 
 auth = Blueprint('auth', __name__)
 
@@ -29,7 +34,7 @@ def login():
             if user.check_password(password):  # redo error checks
                 flash('successfully logged in', category='success')
                 login_user(user, remember=True)
-            return redirect(url_for('views.home'))
+            return redirect(url_for('core.root_view'))
         else:
             for message in validation_errors.values():
                 flash(message, category='error')
@@ -56,22 +61,18 @@ def signup():
 
         user = User.query.filter_by(username=username).first()
         if user:
-            validation_errors[
-                'username_error'] = 'This Username is already taken'
+            validation_errors['username_error'] = 'This Username is already taken'
         if not username:
             validation_errors['username_error'] = 'A username is required'
         else:
             if len(username) < 4:
-                validation_errors[
-                    'username_error'] = 'Username must be 4 characters or longer'
+                validation_errors['username_error'] = 'Username must be 4 characters or longer'
         if not password1:
             validation_errors['password_error'] = 'A password is required'
         if password1 != password2:
-            validation_errors[
-                'password_error'] = 'Provided passwords do not match'
+            validation_errors['password_error'] = 'Provided passwords do not match'
         if len(password1) < 4:
-            validation_errors[
-                'password_error'] = 'Password must be at least 4 characters'
+            validation_errors['password_error'] = 'Password must be at least 4 characters'
         if not len(validation_errors):
             new_user = User(username=username)
             new_user.set_password(password1)

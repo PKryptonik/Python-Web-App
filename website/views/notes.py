@@ -1,15 +1,20 @@
-from flask import Blueprint, render_template, request, jsonify, session
-from flask_login import login_required, current_user
-from .models import Note, Note_user_link, User, db
-from .flashed_messages import flash
 import json
 
-views = Blueprint('views', __name__)
+from flask import Blueprint, render_template, request, jsonify, session
+from flask_login import login_required, current_user
+
+from ..models.db import db
+from ..models.note import Note
+from ..models.user import User
+from ..lib.flashed_messages import flash
 
 
-@views.route('/', methods=['GET', 'POST'])
+notes = Blueprint('notes', __name__)
+
+
+@notes.route('/', methods=['GET', 'POST'])
 @login_required  # makes it so you cant access logout unless logged in. flask magic
-def home():
+def list():
     if request.method == 'POST':
         validation_errors = {}
         note = request.form.get('note')
@@ -29,13 +34,7 @@ def home():
     return render_template("home.html")
 
 
-@views.route('/notifications', methods=['GET'])
-@login_required
-def notifications():
-    return render_template('notifications.html')
-
-
-@views.route('/delete-note', methods=['POST'])
+@notes.route('/delete-note', methods=['POST'])
 @login_required
 def delete_note():
     note = json.loads(request.data)
@@ -53,7 +52,7 @@ def delete_note():
         return jsonify(result=False)
 
 
-@views.route('/share-note', methods=['POST'])
+@notes.route('/share-note', methods=['POST'])
 def share_note():
     body = request.json
 
@@ -83,7 +82,7 @@ def share_note():
     return jsonify(result=True)
 
 
-@views.route('/edit-note', methods=['POST'])
+@notes.route('/edit-note', methods=['POST'])
 @login_required
 def edit_note():
     editedNote = json.loads(request.data)
@@ -97,7 +96,7 @@ def edit_note():
         return jsonify(result=True)
 
 
-@views.route('/collab-note', methods=['POST'])
+@notes.route('/collab-note', methods=['POST'])
 def collab_note():
     body = request.json
     flash('A user has collaborated a note with you! Click here to view',
