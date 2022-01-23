@@ -3,6 +3,7 @@ from pathlib import Path
 from flask import Flask
 
 from . import models
+from .lib import auth as lib_auth
 
 
 def create_app():
@@ -24,6 +25,6 @@ def create_app():
     app.register_blueprint(notes, url_prefix='/notes')
     configure_helpers(app)
 
-    models.flask_user_control(app)
+    lib_auth.configure_flask_auth(app)
 
     return app
